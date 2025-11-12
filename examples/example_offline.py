@@ -23,6 +23,11 @@ def prepare_prompt(question: str, tokenizer, model_type: str = "deepseek") -> st
             {"role": "system", "content": "该助手为DeepSeek-R1，由深度求索公司创造。\n今天是2025年5月28日，星期一。\n"},
             {"role": "user", "content": question}
         ]
+    elif model_type == "falcon":
+        messages = [
+            {"role": "system", "content": "You are Falcon, a helpful AI assistant created by Technology Innovation Institute (TII). To answer the user's question, you first think about the reasoning process and then provide the user with the answer. The reasoning process is enclosed within <think> </think> tags, i.e., <think> reasoning process here </think> answer here."},
+            {"role": "user", "content": question}
+        ]
     else:
         # Format for GPT-like models
         messages = [
@@ -32,7 +37,8 @@ def prepare_prompt(question: str, tokenizer, model_type: str = "deepseek") -> st
     full_prompt = tokenizer.apply_chat_template(
         messages,
         tokenize=False,
-        add_generation_prompt=True
+        add_generation_prompt=True,
+        enable_thinking=True
     )
     
     return full_prompt
@@ -185,7 +191,7 @@ def main():
                        help='Sliding window size for confidence computation')
     parser.add_argument('--max_tokens', type=int, default=130000,
                        help='Maximum tokens per generation')
-    parser.add_argument('--model_type', type=str, default="gpt", choices=["deepseek", "gpt"],
+    parser.add_argument('--model_type', type=str, default="gpt", choices=["deepseek", "gpt", "falcon", "qwen"],
                        help='Model type for prompt formatting')
     parser.add_argument('--reasoning_effort', type=str, default="high",
                        help='Reasoning effort for GPT models')

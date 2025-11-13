@@ -24,6 +24,11 @@ def prepare_prompt(question: str, tokenizer, model_type: str = "deepseek") -> st
             {"role": "system", "content": "该助手为DeepSeek-R1，由深度求索公司创造。\n今天是2025年5月28日，星期一。\n"},
             {"role": "user", "content": question}
         ]
+    elif model_type == "falcon":
+        messages = [
+            {"role": "system", "content": "You are Falcon, a helpful AI assistant created by Technology Innovation Institute (TII). To answer the user's question, you first think about the reasoning process and then provide the user with the answer. The reasoning process is enclosed within <think> </think> tags, i.e., <think> reasoning process here </think> answer here."},
+            {"role": "user", "content": question}
+        ]
     else:
         # Format for GPT-like models
         messages = [
@@ -261,7 +266,7 @@ def main():
                        help='Sliding window size for confidence computation')
     parser.add_argument('--max_tokens', type=int, default=64000,
                        help='Maximum tokens per generation')
-    parser.add_argument('--model_type', type=str, default="deepseek", choices=["deepseek", "gpt"],
+    parser.add_argument('--model_type', type=str, default="deepseek", choices=["deepseek", "gpt", "falcon"],
                        help='Model type for prompt formatting')
     parser.add_argument('--temperature', type=float, default=0.6,
                        help='Sampling temperature')

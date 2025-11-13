@@ -344,4 +344,4 @@ class DeepThinkLLM:
         
         print(f'Basic voting candidates: {len(voting_answers)}')
         if voting_answers:
-            print(f'Sample voting answers: {voting_answers[:5]}')
+            print(f'Sample voting answers: {voting_answers}')

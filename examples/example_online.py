@@ -266,6 +266,8 @@ def main():
                        help='Sliding window size for confidence computation')
     parser.add_argument('--max_tokens', type=int, default=64000,
                        help='Maximum tokens per generation')
+    parser.add_argument('--max_input_tokens', type=int, default=8192,
+                       help='Maximum input tokens for a dataset')
     parser.add_argument('--model_type', type=str, default="deepseek", choices=["deepseek", "gpt", "falcon"],
                        help='Model type for prompt formatting')
     parser.add_argument('--temperature', type=float, default=0.6,
@@ -299,7 +301,8 @@ def main():
     print(f"Processing question {args.qid}: {question[:100]}...")
     
     # Initialize DeepThinkLLM
-    deep_llm = DeepThinkLLM(model=args.model, tensor_parallel_size=args.tensor_parallel_size, enable_prefix_caching=True)
+    max_model_len = args.max_tokens + args.max_input_tokens
+    deep_llm = DeepThinkLLM(model=args.model, tensor_parallel_size=args.tensor_parallel_size, enable_prefix_caching=True, max_model_len=max_model_len)
 
     # Prepare prompt
     print("Preparing prompt...")

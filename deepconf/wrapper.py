@@ -305,7 +305,9 @@ class DeepThinkLLM:
         """Perform basic weighted majority voting (for backward compatibility)"""
         voting_answers = []
         voting_weights = []
-        
+        final_traces_stopped_count = 0
+        final_traces_no_extract_answer = 0         
+
         if output.mode == "online":
             output.all_voting_traces = []
             # Add warmup traces above threshold
@@ -318,17 +320,22 @@ class DeepThinkLLM:
             # Add final traces (skip early stopped ones)
             for trace in output.final_traces:
                 if trace.get('stop_reason') == 'gconf_threshold':
+                    final_traces_stopped_count+=1
                     continue
                 if trace.get('extracted_answer'):
                     voting_answers.append(trace['extracted_answer'])
                     voting_weights.append(trace.get('min_conf', 1.0))
                     output.all_voting_traces.append(trace)
+                else:
+                    final_traces_no_extract_answer+=1
         else:
             # Offline mode - use all traces with valid answers
             for trace in output.all_traces:
                 if trace.get('extracted_answer'):
                     voting_answers.append(trace['extracted_answer'])
                     voting_weights.append(1.0)
+                else:
+                    final_traces_no_extract_answer+=1
         
         output.voting_answers = voting_answers
         output.voting_weights = voting_weights
@@ -343,5 +350,7 @@ class DeepThinkLLM:
             output.avg_tokens_per_final_trace = output.final_tokens / len(output.final_traces) if output.final_traces else 0
         
         print(f'Basic voting candidates: {len(voting_answers)}')
+        print(f'Candidates with stop reason: {final_traces_stopped_count}')
+        print(f'Candidates with no answer extracted: {final_traces_no_extract_answer}')
         if voting_answers:
             print(f'Sample voting answers: {voting_answers}')

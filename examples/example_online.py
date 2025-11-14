@@ -268,7 +268,7 @@ def main():
                        help='Maximum tokens per generation')
     parser.add_argument('--max_input_tokens', type=int, default=8192,
                        help='Maximum input tokens for a dataset')
-    parser.add_argument('--model_type', type=str, default="deepseek", choices=["deepseek", "gpt", "falcon"],
+    parser.add_argument('--model_type', type=str, default="deepseek", choices=["deepseek", "gpt", "falcon", "qwen"],
                        help='Model type for prompt formatting')
     parser.add_argument('--temperature', type=float, default=0.6,
                        help='Sampling temperature')

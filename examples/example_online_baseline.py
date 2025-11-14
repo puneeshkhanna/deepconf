@@ -198,7 +198,7 @@ def main():
                        help='Sliding window size for confidence computation')
     parser.add_argument('--max_tokens', type=int, default=64000,
                        help='Maximum tokens per generation')
-    parser.add_argument('--model_type', type=str, default="deepseek", choices=["deepseek", "gpt", "falcon"],
+    parser.add_argument('--model_type', type=str, default="deepseek", choices=["deepseek", "gpt", "falcon", "qwen"],
                        help='Model type for prompt formatting')
     parser.add_argument('--temperature', type=float, default=0.6,
                        help='Sampling temperature')

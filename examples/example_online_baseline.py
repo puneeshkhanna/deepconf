@@ -192,7 +192,7 @@ def main():
                        help='Question ID to process (0-based index)')
     parser.add_argument('--rid', type=str, default="online_baseline",
                        help='Run ID for identification')
-    parser.add_argument('--total_budget', type=int, default=256,
+    parser.add_argument('--budget', type=int, default=256,
                        help='Total number of traces to generate (equivalent to total_budget in online mode)')
     parser.add_argument('--window_size', type=int, default=2048,
                        help='Sliding window size for confidence computation')
@@ -228,7 +228,7 @@ def main():
     ground_truth = str(question_data.get('answer', '')).strip()
     
     print(f"Processing question {args.qid}: {question[:100]}...")
-    print(f"Budget: {args.total_budget} traces (no early exit)")
+    print(f"Budget: {args.budget} traces (no early exit)")
     
     # Initialize DeepThinkLLM
     deep_llm = DeepThinkLLM(model=args.model, tensor_parallel_size=args.tensor_parallel_size, enable_prefix_caching=True)
@@ -249,14 +249,14 @@ def main():
         logprobs=20,
     )
     
-    print(f"Running deep thinking baseline (offline mode, budget={args.total_budget})...")
+    print(f"Running deep thinking baseline (offline mode, budget={args.budget})...")
     start_time = time.time()
     
     # Run deep thinking in offline mode (no early exit)
     result = deep_llm.deepthink(
         prompt=prompt,
         mode="offline",  # Use offline mode to avoid early exit
-        budget=args.total_budget,
+        budget=args.budget,
         window_size=args.window_size,
         sampling_params=sampling_params,
         compute_multiple_voting=not args.no_multiple_voting
@@ -287,7 +287,7 @@ def main():
         'run_id': args.rid,
         'evaluation': evaluation,
         'mode': 'online_baseline_no_early_exit',
-        'total_budget': args.total_budget
+        'total_budget': args.budget
     })
     
     result_filename = f"{args.output_dir}/deepthink_online_baseline_qid{args.qid}_rid{args.rid}_{timestamp}.pkl"
@@ -308,7 +308,7 @@ def main():
         print(f"\n=== BASELINE SUMMARY ===")
         print(f"Model: {args.model}")
         print(f"Question ID: {args.qid}")
-        print(f"Total Budget: {args.total_budget}")
+        print(f"Total Budget: {args.budget}")
         print(f"Voting Methods: {best_accuracy}")
         print(f"Total Tokens: {result.total_tokens}")
         print(f"Generation Time: {result.generation_time:.2f}s")
